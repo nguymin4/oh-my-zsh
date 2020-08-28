@@ -112,12 +112,6 @@ for plugin ($plugins); do
   fi
 done
 
-# Load all of your custom configurations from custom/
-for config_file ($ZSH_CUSTOM/*.zsh(N)); do
-  source $config_file
-done
-unset config_file
-
 # Load the theme
 if [ ! "$ZSH_THEME" = ""  ]; then
   if [ -f "$ZSH_CUSTOM/$ZSH_THEME.zsh-theme" ]; then
