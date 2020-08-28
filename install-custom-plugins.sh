@@ -16,7 +16,6 @@ install() {
 }
 
 plugins=(
-"zsh-users/zsh-autosuggestions"
 "zsh-users/zsh-syntax-highlighting"
 "nguymin4/zsh-vimode-visual"
 "mafredri/zsh-async"
