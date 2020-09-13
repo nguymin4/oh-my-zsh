@@ -54,4 +54,4 @@ zle-line-init() { zle -K viins }
 zle -N zle-line-init
 
 # Enable Shift-Tab
-bindkey -M menuselect '^[[Z' reverse-menu-complete
+# bindkey -M menuselect '^[[Z' reverse-menu-complete

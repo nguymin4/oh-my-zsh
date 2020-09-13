@@ -43,5 +43,6 @@ color() {
   fi
   [[ -n $(pgrep tmux) ]] && tmux source-file ~/.tmux.conf
   xrdb ~/.Xresources
+  source $ZSH_CUSTOM/fzf.zsh
 }
 
