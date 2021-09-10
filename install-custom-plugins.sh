@@ -19,7 +19,7 @@ install() {
 
 plugins=(
 "esc/conda-zsh-completion"
-"nguymin4/zsh-vimode-visual"
+"nguymin4/pure"
 "zsh-users/zsh-syntax-highlighting"
 )
 
