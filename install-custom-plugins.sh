@@ -16,9 +16,10 @@ install() {
 }
 
 plugins=(
-"zsh-users/zsh-syntax-highlighting"
-"nguymin4/zsh-vimode-visual"
 "mafredri/zsh-async"
+"nguymin4/pure"
+"nguymin4/zsh-vimode-visual"
+"zsh-users/zsh-syntax-highlighting"
 )
 
 for plugin in "${plugins[@]}"; do install $plugin & done
