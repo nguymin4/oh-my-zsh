@@ -8,14 +8,17 @@ install() {
 
   if [[ ! -d $plugin_dir ]];
   then
-    git clone git://github.com/$1 $plugin_dir
+    echo "Cloning $1 ..."
+    git clone https://github.com/$1 $plugin_dir
   else
+    echo "Updating $1 ..."
     cd $plugin_dir && git pull
     cd $DIR
   fi
 }
 
 plugins=(
+"esc/conda-zsh-completion"
 "mafredri/zsh-async"
 "nguymin4/pure"
 "nguymin4/zsh-vimode-visual"
