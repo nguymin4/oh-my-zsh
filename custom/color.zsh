@@ -28,17 +28,14 @@ export TERM=xterm-256color
 color() {
   ALACRITTY_FOLDER="$HOME/.config/alacritty"
   TMUX_POWERLINE_FOLDER="$HOME/.config/powerline/colorschemes/tmux"
-  URXVT_FOLDER="$HOME/.Xresources.d/urxvt"
   VIM_FOLDER="$HOME/.vim/colorschemes"
   if [ $1 = 'light' ]; then
     sed -i 's/^colors: \*dark/colors: *light/' $ALACRITTY_FOLDER/alacritty.yml
     ln -sf $TMUX_POWERLINE_FOLDER/tomorrow.json $TMUX_POWERLINE_FOLDER/default.json
-    ln -sf $URXVT_FOLDER/urxvt-tomorrow-theme $URXVT_FOLDER/urxvt-default-theme
     ln -sf $VIM_FOLDER/tomorrow.vim $VIM_FOLDER/default.vim
   else
     sed -i 's/^colors: \*light/colors: *dark/' $ALACRITTY_FOLDER/alacritty.yml
     ln -sf $TMUX_POWERLINE_FOLDER/onedark.json $TMUX_POWERLINE_FOLDER/default.json
-    ln -sf $URXVT_FOLDER/urxvt-arc-theme $URXVT_FOLDER/urxvt-default-theme
     ln -sf $VIM_FOLDER/onedark.vim $VIM_FOLDER/default.vim
   fi
   [[ -n $(pgrep tmux) ]] && tmux source-file ~/.tmux.conf
