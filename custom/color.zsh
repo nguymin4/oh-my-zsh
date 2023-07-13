@@ -30,13 +30,15 @@ color() {
   TMUX_POWERLINE_FOLDER="$HOME/.config/powerline/colorschemes/tmux"
   VIM_FOLDER="$HOME/.vim/colorschemes"
   if [ $1 = 'light' ]; then
+    sed -i 's/opacity: .*/opacity: 1/' $ALACRITTY_FOLDER/alacritty.yml
     sed -i 's/^colors: \*dark/colors: *light/' $ALACRITTY_FOLDER/alacritty.yml
     ln -sf $TMUX_POWERLINE_FOLDER/tomorrow.json $TMUX_POWERLINE_FOLDER/default.json
-    ln -sf $VIM_FOLDER/tomorrow.vim $VIM_FOLDER/default.vim
+    ln -sf $VIM_FOLDER/edge-light.vim $VIM_FOLDER/default.vim
   else
+    sed -i 's/opacity: .*/opacity: 0.90/' $ALACRITTY_FOLDER/alacritty.yml
     sed -i 's/^colors: \*light/colors: *dark/' $ALACRITTY_FOLDER/alacritty.yml
     ln -sf $TMUX_POWERLINE_FOLDER/onedark.json $TMUX_POWERLINE_FOLDER/default.json
-    ln -sf $VIM_FOLDER/onedark.vim $VIM_FOLDER/default.vim
+    ln -sf $VIM_FOLDER/edge-dark.vim $VIM_FOLDER/default.vim
   fi
   [[ -n $(pgrep tmux) ]] && tmux source-file ~/.tmux.conf
   xrdb ~/.Xresources
