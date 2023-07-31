@@ -23,25 +23,28 @@ if [ "$TERM" = "linux" ]; then
   echo -en "\e]PFA0A0A0" #white
   setterm --clear all --background black --foreground white
 fi
-export TERM=xterm-256color
 
 color() {
-  ALACRITTY_FOLDER="$HOME/.config/alacritty"
-  TMUX_POWERLINE_FOLDER="$HOME/.config/powerline/colorschemes/tmux"
-  VIM_FOLDER="$HOME/.vim/colorschemes"
+  if [[ -z $1 ]]; then
+    echo "Usage: color dark|light"
+    return 1
+  fi
+
+  ALACRITTY_FILE="$HOME/.config/alacritty/alacritty.yml"
+  TMUX_POWERLINE_FILE="$HOME/.config/powerline/config.json"
   if [ $1 = 'light' ]; then
-    sed -i 's/opacity: .*/opacity: 1/' $ALACRITTY_FOLDER/alacritty.yml
-    sed -i 's/^colors: \*dark/colors: *light/' $ALACRITTY_FOLDER/alacritty.yml
-    ln -sf $TMUX_POWERLINE_FOLDER/tomorrow.json $TMUX_POWERLINE_FOLDER/default.json
-    ln -sf $VIM_FOLDER/edge-light.vim $VIM_FOLDER/default.vim
+    sed -i 's/opacity: .*/opacity: 1/' $ALACRITTY_FILE
+    sed -i 's/^colors: \*dark/colors: *light/' $ALACRITTY_FILE
+    sed -i 's/onedark/tomorrow/' $TMUX_POWERLINE_FILE
+    sed -i -E '/colorschemes\//s|[a-zA-Z0-9_-]+\.vim|edge-light.vim|' ~/.vimrc
   else
-    sed -i 's/opacity: .*/opacity: 0.90/' $ALACRITTY_FOLDER/alacritty.yml
-    sed -i 's/^colors: \*light/colors: *dark/' $ALACRITTY_FOLDER/alacritty.yml
-    ln -sf $TMUX_POWERLINE_FOLDER/onedark.json $TMUX_POWERLINE_FOLDER/default.json
-    ln -sf $VIM_FOLDER/edge-dark.vim $VIM_FOLDER/default.vim
+    sed -i 's/opacity: .*/opacity: 0.90/' $ALACRITTY_FILE
+    sed -i 's/^colors: \*light/colors: *dark/' $ALACRITTY_FILE
+    sed -i 's/tomorrow/onedark/' $TMUX_POWERLINE_FILE
+    sed -i -E '/colorschemes\//s|[a-zA-Z0-9_-]+\.vim|edge-dark.vim|' ~/.vimrc
   fi
   [[ -n $(pgrep tmux) ]] && tmux source-file ~/.tmux.conf
-  xrdb ~/.Xresources
+  [[ -z $WAYLAND_DISPLAY ]] && xrdb ~/.Xresources
   source $ZSH_CUSTOM/fzf.zsh
 }
 
