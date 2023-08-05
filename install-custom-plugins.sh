@@ -19,7 +19,6 @@ install() {
 
 plugins=(
 "esc/conda-zsh-completion"
-"mafredri/zsh-async"
 "nguymin4/pure"
 "nguymin4/zsh-vimode-visual"
 "zsh-users/zsh-syntax-highlighting"
