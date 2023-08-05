@@ -44,7 +44,6 @@ color() {
     sed -i -E '/colorschemes\//s|[a-zA-Z0-9_-]+\.vim|edge-dark.vim|' ~/.vimrc
   fi
   [[ -n $(pgrep tmux) ]] && tmux source-file ~/.tmux.conf
-  [[ -z $WAYLAND_DISPLAY ]] && xrdb ~/.Xresources
   source $ZSH_CUSTOM/fzf.zsh
 }
 
