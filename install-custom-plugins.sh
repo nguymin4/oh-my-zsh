@@ -3,15 +3,15 @@
 DIR=${ZSH_CUSTOM:-./custom}
 
 install() {
-  IFS='\/' read -r -a parts < <(echo $1)
-  plugin_dir=$DIR/plugins/${parts[1]}
+  plugin_name=$(echo $1 | cut -d / -f2)
+  plugin_dir=$DIR/plugins/$plugin_name
 
   if [[ ! -d $plugin_dir ]];
   then
-    echo "Cloning $1 ..."
-    git clone https://github.com/$1 $plugin_dir
+    echo "Cloning $1 to $plugin_dir..."
+    git clone "https://github.com/${1}.git" $plugin_dir
   else
-    echo "Updating $1 ..."
+    echo "Updating $1 at $plugin_dir..."
     cd $plugin_dir && git pull
     cd $DIR
   fi

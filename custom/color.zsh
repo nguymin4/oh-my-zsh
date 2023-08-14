@@ -1,5 +1,7 @@
 # dircolors
-eval `dircolors ~/.dircolors`
+if whence dircolors >/dev/null; then
+  eval `dircolors ~/.dircolors`
+fi
 zstyle ':completion:*' list-colors
 
 # tty colors
