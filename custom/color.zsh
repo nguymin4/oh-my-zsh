@@ -26,26 +26,53 @@ if [ "$TERM" = "linux" ]; then
   setterm --clear all --background black --foreground white
 fi
 
-color() {
-  if [[ -z $1 ]]; then
-    echo "Usage: color dark|light"
-    return 1
-  fi
+# Utility function to change color scheme for terminal apps
+theme() {
+  local next_theme=$1
+  case $next_theme in
+    dark|light) ;;
+    *)
+      echo "Usage: theme dark|light"
+      return 1
+      ;;
+  esac
 
-  ALACRITTY_FILE="$HOME/.config/alacritty/alacritty.yml"
-  TMUX_POWERLINE_FILE="$HOME/.config/powerline/config.json"
-  if [ $1 = 'light' ]; then
-    sed -i 's/opacity: .*/opacity: 1/' $ALACRITTY_FILE
-    sed -i 's/^colors: \*dark/colors: *light/' $ALACRITTY_FILE
-    sed -i 's/onedark/tomorrow/' $TMUX_POWERLINE_FILE
-    sed -i -E '/colorschemes\//s|[a-zA-Z0-9_-]+\.vim|edge-light.vim|' ~/.vimrc
-  else
-    sed -i 's/opacity: .*/opacity: 0.90/' $ALACRITTY_FILE
-    sed -i 's/^colors: \*light/colors: *dark/' $ALACRITTY_FILE
-    sed -i 's/tomorrow/onedark/' $TMUX_POWERLINE_FILE
-    sed -i -E '/colorschemes\//s|[a-zA-Z0-9_-]+\.vim|edge-dark.vim|' ~/.vimrc
-  fi
-  [[ -n $(pgrep tmux) ]] && tmux source-file ~/.tmux.conf
-  source $ZSH_CUSTOM/fzf.zsh
+  local prev_theme=$([ "$next_theme" = "light" ] && echo "dark" || echo "light")
+  ( set_alacritty_theme $next_theme $prev_theme & )
+  ( set_wezterm_theme $next_theme $prev_theme & )
+  ( set_nvim_theme $next_theme $prev_theme & )
+  ( set_tmux_theme $next_theme $prev_theme & )
+  set_fzf_theme $next_theme
 }
 
+set_alacritty_theme() {
+  local next_theme_file="alacritty_${1}.toml"
+  local prev_theme_file="alacritty_${2}.toml"
+
+  local alacritty_folder="$HOME/.config/alacritty"
+  sed -i "s|$prev_theme_file|$next_theme_file|" "$alacritty_folder/alacritty.toml"
+}
+
+set_nvim_theme() {
+  local next_theme_file="edge-${1}.vim"
+  local prev_theme_file="edge-${2}.vim"
+
+  sed -i "s|$prev_theme_file|$next_theme_file|" ~/.vimrc
+  local vim_cmd="<C-\\><C-n>:silent! source ~/.vim/colorschemes/$next_theme_file<CR>:<Esc>"
+  for server in $(find /tmp/ -maxdepth 1 -name 'nvim.*.pipe'); do
+    nvim --server $server --remote-send $vim_cmd >/dev/null 2>&1
+  done
+}
+
+set_tmux_theme() {
+  sed -i "/tmux_theme/s|$2|$1|" ~/.tmux.conf
+  [[ -n $(pgrep tmux) ]] && tmux source-file ~/.tmux.conf
+}
+
+set_wezterm_theme() {
+  local next_theme="${1}_theme"
+  local prev_theme="${2}_theme"
+
+  local wezterm_config_file="$HOME/.config/wezterm/wezterm.lua"
+  sed -i "/local current_theme/s|$prev_theme|$next_theme|" $wezterm_config_file
+}
