@@ -26,26 +26,37 @@ if [ "$TERM" = "linux" ]; then
   setterm --clear all --background black --foreground white
 fi
 
+# Change color scheme for terminal apps
+ALACRITTY_FOLDER="$HOME/.config/alacritty"
+ALACRITTY_FILE="$ALACRITTY_FOLDER/alacritty.toml"
+TMUX_POWERLINE_FILE="$HOME/.config/powerline/config.json"
+
+
 color() {
   if [[ -z $1 ]]; then
     echo "Usage: color dark|light"
     return 1
   fi
 
-  ALACRITTY_FILE="$HOME/.config/alacritty/alacritty.yml"
-  TMUX_POWERLINE_FILE="$HOME/.config/powerline/config.json"
-  if [ $1 = 'light' ]; then
-    sed -i 's/opacity: .*/opacity: 1/' $ALACRITTY_FILE
-    sed -i 's/^colors: \*dark/colors: *light/' $ALACRITTY_FILE
+  alacritty_decoration="Full"
+  if [[ "$(uname -sr)" =~ "Darwin.*" ]]; then
+    alacritty_decoration="Buttonless"
+  fi
+
+  if [ "$1" = "light" ]; then
+    sed -E "/decorations/s|Full|$alacritty_decoration|" $ALACRITTY_FOLDER/alacritty_tomorrow.toml > $ALACRITTY_FILE
     sed -i 's/onedark/tomorrow/' $TMUX_POWERLINE_FILE
-    sed -i -E '/colorschemes\//s|[a-zA-Z0-9_-]+\.vim|edge-light.vim|' ~/.vimrc
+    sed -i 's|edge-dark.vim|edge-light.vim|' ~/.vimrc
   else
-    sed -i 's/opacity: .*/opacity: 0.90/' $ALACRITTY_FILE
-    sed -i 's/^colors: \*light/colors: *dark/' $ALACRITTY_FILE
+    sed -E "/decorations/s|Full|$alacritty_decoration|" $ALACRITTY_FOLDER/alacritty_onedark.toml > $ALACRITTY_FILE
     sed -i 's/tomorrow/onedark/' $TMUX_POWERLINE_FILE
-    sed -i -E '/colorschemes\//s|[a-zA-Z0-9_-]+\.vim|edge-dark.vim|' ~/.vimrc
+    sed -i 's|edge-light.vim|edge-dark.vim|' ~/.vimrc
   fi
   [[ -n $(pgrep tmux) ]] && tmux source-file ~/.tmux.conf
   source $ZSH_CUSTOM/fzf.zsh
 }
 
+# Try to setup alacritty config file if none available
+if [ ! -f "$ALACRITTY_FILE" ]; then
+  color dark
+fi

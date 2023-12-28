@@ -2,7 +2,7 @@ if [ -f $HOME/.fzf.zsh ]; then
   source $HOME/.fzf.zsh
 
   COLOR_BG='dark'
-  if ! grep -Fq 'colors: *dark' $HOME/.config/alacritty/alacritty.yml; then
+  if grep -Fq 'background = "0xffffff"' $HOME/.config/alacritty/alacritty.toml; then
     COLOR_BG='light'
   fi
 
