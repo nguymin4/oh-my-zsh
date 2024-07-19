@@ -3,25 +3,25 @@
 DIR=${ZSH_CUSTOM:-./custom}
 
 install() {
-  IFS='\/' read -r -a parts < <(echo $1)
-  plugin_dir=$DIR/plugins/${parts[1]}
+  plugin_name=$(echo "$1" | cut -d / -f2)
+  plugin_dir=$DIR/plugins/$plugin_name
 
   if [[ ! -d $plugin_dir ]];
   then
-    git clone git://github.com/$1 $plugin_dir
+    echo "Cloning $1 to $plugin_dir..."
+    git clone "https://github.com/${1}.git" "$plugin_dir"
   else
-    cd $plugin_dir && git pull
-    cd $DIR
+    echo "Updating $1 at $plugin_dir..."
+    cd "$plugin_dir" && git pull
+    cd "$DIR" || return
   fi
 }
 
 plugins=(
-"zsh-users/zsh-autosuggestions"
-"zsh-users/zsh-syntax-highlighting"
+"esc/conda-zsh-completion"
 "nguymin4/zsh-vimode-visual"
-"mafredri/zsh-async"
+"zsh-users/zsh-syntax-highlighting"
 )
 
-for plugin in "${plugins[@]}"; do install $plugin & done
+for plugin in "${plugins[@]}"; do install "$plugin" & done
 wait
-
